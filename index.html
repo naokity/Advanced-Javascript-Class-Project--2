@@ -12,7 +12,7 @@
 		width: 960px;
 	}
 	.modal-dialog img {
-		max-width:100%;
+		max-width: 100%;
 	}
 	.carousel {
 		margin: 0 auto;
@@ -24,31 +24,53 @@
 	.jumbotron h1, .jumbotron p{
 		color: #fff;
 	}
+	#map-canvas {
+		width:100%;
+		height:100px;
+	}
 	</style>
 </head>
 <body>
 	<div class="jumbotron">
 		<div class="container"><h1>My Favorite Animals</h1>
 			<p>Below are a collection of my favorite animals. Click the spinning carousel to see where they live.</p>
-			<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+			<p><a class="btn btn-primary btn-lg" href="Project%20Spec.pdf" role="button"><span class="glyphicon glyphicon-eye-open"></span> Read the Project Spec &raquo;</a></p>
 		</div>
 	</div>
 	<div class="container">
 		<div class="row">
-			<div class="col-lg-8">
-				<div class="carousel" ><!-- This is the wrapping element -->
-					<a class="lb_pic">
-						<img src="redpanda.jpg" alt="Red Panda" />
-					</a>
-					<a class="lb_pic">
-						<img src="mongoose.jpg" alt="Mongoose" />
-					</a>
-					<a class="lb_pic">
-						<img src="koala.jpg" alt="Koala" />
-					</a>
-					<a class="lb_pic">
-						<img src="devil.jpg" alt="Tasmanian Devil" />
-					</a>
+			<div class="col-lg-7">
+				<div class="carousel" ></div>
+				<div class="page-header">
+					<h1>Explanation <small>Why did I do this?</small></h1>
+				</div>
+				<p>This was an assignment from my advanced JavaScript class. It was the second project assigned by Dr. Lin Xie. The purpose was to demonstrate proficincy in use of a mixture of JavaScript APIs and plugins.</p>
+				<h2>Methodology</h2>
+				<p>I started with the assumption that I would utilize the Bootstrap framework to gain further proficiency. I added jQuery to ensure Bootstrap would work. jQuery is also far easier and more robust that JavaScript alone.</p>
+				<p>From there, I included the carousel plugin provided for the project. Implementation was easy as the pre-work was provided by the instructor. Nevetheless, certain modifications were made to meet my final design.</p>
+				<p>After setting up the carousel and basic HTML, I began to code with Bootstrap to make the "lightbox". In Bootstrap the component I used is the modal. I added a bit of custom style code to give the modal its width, but in future iterations I would probably do this by editing and recompiling the LESS code.</p>
+				<p>Then I began to integrate the Google Maps API code. From here and at several other places I started the process of adding style, animation and embellishment to give the page a robust feel.</p>
+				<h2>The Code</h2>
+				<p>For display to employers, acedemics and partners, I have included the code on GitHub. You can view the repository here: <a href="https://github.com/Akilez/Advanced-Javascript-Class-Project--2">AdvancedJavascript Class Project-2</a></p>
+
+			</div>
+			<div class="col-lg-5">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><span class="glyphicon glyphicon-hand-left"></span> Instructions</h3>
+					</div>
+					<div class="panel-body">
+						<ol>
+							<li>Click on one of the images from the spinning carousel to view a larger image</li>
+							<li>Click the "read more" button to view a map of the animal's native location </li>
+
+					</div>
+				</div>
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h3 class="panel-title"><span class="glyphicon glyphicon-bookmark"></span> Cast of Characters</h3>
+					</div>
+					<div class="panel-body sidebar"></div>
 				</div>
 			</div>
 		</div>
@@ -63,14 +85,38 @@
 					<h4 class="modal-title"></h4>
 				</div>
 				<div class="modal-body">
-					<div id="map-canvas"></div>
-					<img src="" alt="" />
+					<div class="row">
+						<div class="imageContainer col-lg-12">
+							<a class="showMap">
+								<img src="" alt="" />
+							</a>
+						</div>
+						<div class="detailsContainer col-lg-8">
+							<!-- Google Maps Canvas -->
+							<!-- Must be visible to initialize -->
+							<div id="map-canvas"></div>
+							<h3 class="animalTitle"></h3>
+							<p class="animalDescription"></p>
+						</div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-map-marker"></span> Map it!</button>
+					<button type="button" class="btn btn-primary showMap"><span class="glyphicon glyphicon-map-marker"></span> Map it!</button>
 				</div>
 			</div>
+		</div>
+	</div>
+
+	<!-- Media Template -->
+	<div class="media social-template">
+		<div class="media-left">
+			<a >
+				<img src="" class="media-object" alt="">
+			</a>
+		</div>
+		<div class="media-body">
+			<h4 class="media-heading"></h4>
 		</div>
 	</div>
 
@@ -83,42 +129,70 @@
 	<!-- Google Maps API -->
 	<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCExbVB4MJdYwYAWEqOsSyG7VkXglMwTUA"></script>
 	<!-- Carousel -->
-	<script src="script.js"></script>
+	<script src="widget/lib/script.js"></script>
 	<!-- Site Wire-up -->
 	<script>
+	// Google map canvas
+	var map;
+	var $map = $("#map-canvas");
+	var $modal = $('#modalTemplate')
+	var $sidebar = $('.sidebar');
+	var $mediaTemplate = $('.social-template');
+	var $imageContainer = $modal.find('.imageContainer');
+	var $detailsContainer = $modal.find('.detailsContainer');
+	$detailsContainer.hide();
+
+
 	$(function() {
+		var $modal = $('#modalTemplate')
 		var data = {'animals':[
 			{
 				'title': 				'Koala',
-				'description': 	'',
+				'description': 	'The koala is an arboreal herbivorous marsupial native to Australia. It is the only extant representative of the family Phascolarctidae, and its closest living relatives are the wombats',
 				'imageSM':			'images/koala.jpg',
 				'imageLG':			'images/koala-lg.jpg',
-				'lat':					'131',
-				'lng':					'200',
+				'lat':					'-29.353115',
+				'lng':					'148.432723',
 			},
 			{
 				'title': 				'Tazmanian Devil',
-				'description': 	'',
+				'description': 	'The Tasmanian devil is a carnivorous marsupial of the family Dasyuridae, now found in the wild only on the Australian island state of Tasmania. The size of a small dog, it became the largest carnivorous marsupial in the world following the extinction of the thylacine in 1936.',
 				'imageSM':			'images/devil.jpg',
 				'imageLG':			'images/devil-lg.jpg',
-				'lat':					'131',
-				'lng':					'200',
+				'lat':					'-41.401246',
+				'lng':					'146.455184',
 			},
 			{
 				'title': 				'Mongoose',
-				'description': 	'',
+				'description': 	'Mongoose is the popular English name for 29 of 34 species in the 14 genera of the family Herpestidae, which are small carnivorans that are native to southern Eurasia and mainland Africa.',
 				'imageSM':			'images/mongoose.jpg',
 				'imageLG':			'images/mongoose-lg.jpg',
-				'lat':					'131',
-				'lng':					'200',
+				'lat':					'36.474144',
+				'lng':					'97.610986',
 			},
 			{
 				'title': 				'Red Panda',
-				'description': 	'',
+				'description': 	'The red panda, also called lesser panda and red cat-bear, is a small arboreal mammal native to the eastern Himalayas and south-western China that has been classified as vulnerable by IUCN as its wild population is estimated at less than 10,000 mature individuals.',
 				'imageSM':			'images/redpanda.jpg',
 				'imageLG':			'images/redpanda-lg.jpg',
-				'lat':					'131',
-				'lng':					'200',
+				'lat':					'29.5549125',
+				'lng':					'106.5485537',
+			},
+			{
+				'title': 				'Bison',
+				'description': 	'Bison are large, even-toed ungulates in the genus Bison within the subfamily Bovinae.',
+				'imageSM':			'images/bison.jpg',
+				'imageLG':			'images/bison-lg.jpg',
+				'lat':					'44.2126995',
+				'lng':					'-100.2471641',
+			},
+			{
+				'title': 				'Peregrine Falcon',
+				'description': 	'The peregrine falcon, also known as the peregrine, is a widespread bird of prey in the family Falconidae. A large, crow-sized falcon, it has a blue-grey back, barred white underparts, and a black head and "moustache".',
+				'imageSM':			'images/peregrine.jpg',
+				'imageLG':			'images/peregrine-lg.jpg',
+				'lat':					'46.191657',
+				'lng':					'-119.936778',
 			}
 		]};
 
@@ -132,6 +206,7 @@
 				.attr('data-target', '#modalTemplate')
 				.attr('data-toggle', 'modal')
 				.attr('data-title', animal.title)
+				.attr('data-description', animal.description)
 				.attr('data-imagelg', animal.imageLG)
 				.attr('data-lat', animal.lat)
 				.attr('data-lng', animal.lng)
@@ -140,6 +215,24 @@
 				.attr('src', animal.imageSM)
 				.attr('alt', 'Small image of: ' + animal.title)
 				.appendTo($carItem);
+
+			var $mediaItemImg = $("<img>")
+				.attr('src', animal.imageSM)
+				.attr('alt', 'Small image of: ' + animal.title)
+				.addClass('media-object thumbnail');
+
+			var $newMedia = $mediaTemplate
+				.clone()
+				.appendTo($sidebar);
+			$newMedia
+				.find('.media-left')
+				.html($mediaItemImg);
+			$newMedia
+				.find('.media-heading')
+				.html(animal.title)
+			$newMedia
+				.find('.media-body')
+				.append(animal.description);
 		}
 
 		// Create a carousel on all wrapping elements
@@ -150,26 +243,59 @@
 			minScale:0.6           // Set min scale of rear-most item.
 		});
 
-		$('#modalTemplate').on('show.bs.modal', function (event) {
+		$modal.on('show.bs.modal', function (event) {
 			var button = $(event.relatedTarget) // Button that triggered the modal
 			var title = button.data('title');
 			var largeImage = button.data('imagelg');
+			var description = button.data('description');
 			var latitude = button.data('lat');
 			var longitude = button.data('lng');
 
-			var modal = $(this)
-			modal.find('.modal-title').text(title)
-			modal.find('.modal-body img')
+			$modal.find('.modal-title').text(title)
+			$imageContainer.find('img')
 				.attr('src', largeImage)
 				.attr('alt', title);
-			var mapOptions = {
-				center: { lat: latitude, lng: longitude},
-				zoom: 8
-			};
-			var map = new google.maps.Map(document.getElementById('map-canvas'),
-			mapOptions);
-		})
+			$detailsContainer.find('p')
+				.html(description);
+				$detailsContainer.find('h3')
+				.html(title);
+
+			// Re-center map
+			moveToLocation(latitude, longitude);
+		});
+
+		$modal.on('hide.bs.modal', function (event) {
+			$imageContainer.css('width', '100%')
+			$detailsContainer.hide();
+		});
+
+		var mapOptions = {
+			center: new google.maps.LatLng(0, 0),
+			zoom: 3,
+			mapTypeId: google.maps.MapTypeId.ROADMAP
+		};
+		// assigning to global variable:
+		map = new google.maps.Map(document.getElementById("map-canvas"),
+		mapOptions);
+
+		function moveToLocation(lat, lng){
+			var center = new google.maps.LatLng(lat, lng);
+			// using global variable:
+			map.panTo(center);
+		}
 	});
+	$('.showMap').on('click', function(e) {
+		e.preventDefault();
+		$imageContainer.animate({
+			width: "33.333%"
+			}, 1000, function() {
+			// Animation complete.
+			$detailsContainer.fadeIn();
+			google.maps.event.trigger(map, 'resize');
+		});
+
+	}
+	)
 	</script>
 
 </body>
