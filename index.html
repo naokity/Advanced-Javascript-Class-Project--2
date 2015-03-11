@@ -7,45 +7,170 @@
 	<!-- Latest compiled and minified CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
-
+	<style>
+	.modal-dialog {
+		width: 960px;
+	}
+	.modal-dialog img {
+		max-width:100%;
+	}
+	.carousel {
+		margin: 0 auto;
+	}
+	.jumbotron {
+		background: url('collage.jpg') no-repeat fixed bottom center;
+		background-size: cover;
+	}
+	.jumbotron h1, .jumbotron p{
+		color: #fff;
+	}
+	</style>
 </head>
 <body>
-
-	<div class="carousel" ><!-- This is the wrapping element -->
-		<a href="pic1.png" class="lb_pic">
-			<img src="pic1.png" alt="Pic 1"/>
-		</a>
-		<a href="pic2.png" class="lb_pic">
-			<img src="pic2.png" alt="Pic 2" class="lb_pic"/>
-		</a>
-		<a href="pic3.png" class="lb_pic">
-			<img src="pic3.png" alt="Pic 3" class="lb_pic"/>
-		</a>
-		<a href="pic4.png" class="lb_pic">
-			<img src="pic4.png" alt="Pic 4" class="lb_pic"/>
-		</a>
-		<a href="pic5.png" class="lb_pic">
-			<img src="pic5.png" alt="Pic 5" class="lb_pic"/>
-		</a>
-		<a href="pic6.png" class="lb_pic">
-			<img src="pic6.png" alt="Pic 6" class="lb_pic"/>
-		</a>
-		<a href="pic7.png" class="lb_pic">
-			<img src="pic7.png" alt="Pic 7" class="lb_pic"/>
-		</a>
-		<a href="pic8.png" class="lb_pic">
-			<img src="pic8.png" alt="Pic 8" class="lb_pic"/>
-		</a>
-		<a href="pic9.png" class="lb_pic">
-			<img src="pic9.png" alt="Pic 9" class="lb_pic"/>
-		</a>
+	<div class="jumbotron">
+		<div class="container"><h1>My Favorite Animals</h1>
+			<p>Below are a collection of my favorite animals. Click the spinning carousel to see where they live.</p>
+			<p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a></p>
+		</div>
+	</div>
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="carousel" ><!-- This is the wrapping element -->
+					<a class="lb_pic">
+						<img src="redpanda.jpg" alt="Red Panda" />
+					</a>
+					<a class="lb_pic">
+						<img src="mongoose.jpg" alt="Mongoose" />
+					</a>
+					<a class="lb_pic">
+						<img src="koala.jpg" alt="Koala" />
+					</a>
+					<a class="lb_pic">
+						<img src="devil.jpg" alt="Tasmanian Devil" />
+					</a>
+				</div>
+			</div>
+		</div>
 	</div>
 
+	<!-- Modal Template -->
+	<div class="modal fade" id="modalTemplate" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					<h4 class="modal-title"></h4>
+				</div>
+				<div class="modal-body">
+					<div id="map-canvas"></div>
+					<img src="" alt="" />
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-map-marker"></span> Map it!</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- jQuery -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<!-- jQuery UI -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
-	<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<!-- Bootsrap -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+	<!-- Google Maps API -->
+	<script	src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCExbVB4MJdYwYAWEqOsSyG7VkXglMwTUA"></script>
+	<!-- Carousel -->
 	<script src="script.js"></script>
+	<!-- Site Wire-up -->
+	<script>
+	$(function() {
+		var data = {'animals':[
+			{
+				'title': 				'Koala',
+				'description': 	'',
+				'imageSM':			'images/koala.jpg',
+				'imageLG':			'images/koala-lg.jpg',
+				'lat':					'131',
+				'lng':					'200',
+			},
+			{
+				'title': 				'Tazmanian Devil',
+				'description': 	'',
+				'imageSM':			'images/devil.jpg',
+				'imageLG':			'images/devil-lg.jpg',
+				'lat':					'131',
+				'lng':					'200',
+			},
+			{
+				'title': 				'Mongoose',
+				'description': 	'',
+				'imageSM':			'images/mongoose.jpg',
+				'imageLG':			'images/mongoose-lg.jpg',
+				'lat':					'131',
+				'lng':					'200',
+			},
+			{
+				'title': 				'Red Panda',
+				'description': 	'',
+				'imageSM':			'images/redpanda.jpg',
+				'imageLG':			'images/redpanda-lg.jpg',
+				'lat':					'131',
+				'lng':					'200',
+			}
+		]};
+
+		var animals = data.animals;
+		for (var i = 0; i < animals.length; i++) {
+			var animal = animals[i];
+
+			// Create carousel items
+			var $carItem = $("<a>")
+				.addClass('lb_pic')
+				.attr('data-target', '#modalTemplate')
+				.attr('data-toggle', 'modal')
+				.attr('data-title', animal.title)
+				.attr('data-imagelg', animal.imageLG)
+				.attr('data-lat', animal.lat)
+				.attr('data-lng', animal.lng)
+				.appendTo(".carousel");
+			var $carItemImg = $("<img>")
+				.attr('src', animal.imageSM)
+				.attr('alt', 'Small image of: ' + animal.title)
+				.appendTo($carItem);
+		}
+
+		// Create a carousel on all wrapping elements
+		// with a class of .carousel.
+		$('.carousel').Carousel({
+			width:512, height:300,  // Set wrapping element size.
+			radiusX:220,radiusY:70, // Set carousel radii.
+			minScale:0.6           // Set min scale of rear-most item.
+		});
+
+		$('#modalTemplate').on('show.bs.modal', function (event) {
+			var button = $(event.relatedTarget) // Button that triggered the modal
+			var title = button.data('title');
+			var largeImage = button.data('imagelg');
+			var latitude = button.data('lat');
+			var longitude = button.data('lng');
+
+			var modal = $(this)
+			modal.find('.modal-title').text(title)
+			modal.find('.modal-body img')
+				.attr('src', largeImage)
+				.attr('alt', title);
+			var mapOptions = {
+				center: { lat: latitude, lng: longitude},
+				zoom: 8
+			};
+			var map = new google.maps.Map(document.getElementById('map-canvas'),
+			mapOptions);
+		})
+	});
+	</script>
 
 </body>
 </html>

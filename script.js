@@ -198,14 +198,3 @@
 
 })(jQuery);
 // End of jQuery carousel plugin.
-
-$(function(){
-  // Create a carousel on all wrapping elements
-  // with a class of .carousel.
-  $('.carousel').Carousel({
-    width:512, height:300,  // Set wrapping element size.
-    radiusX:220,radiusY:70, // Set carousel radii.
-    minScale:0.6           // Set min scale of rear-most item.
-
-  });
-});
