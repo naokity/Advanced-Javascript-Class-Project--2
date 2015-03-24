@@ -63,7 +63,7 @@
 						<ol>
 							<li>Click on one of the images from the spinning carousel to view a larger image</li>
 							<li>Click the "read more" button to view a map of the animal's native location </li>
-
+							<li>Click the "Website" button for the animal's official website </li>
 					</div>
 				</div>
 				<div class="panel panel-default">
@@ -103,6 +103,7 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 					<button type="button" class="btn btn-primary showMap"><span class="glyphicon glyphicon-map-marker"></span> Map it!</button>
+					<button type="button" class="btn btn-link animalLink">Website</button>
 				</div>
 			</div>
 		</div>
@@ -140,6 +141,7 @@
 	var $mediaTemplate = $('.social-template');
 	var $imageContainer = $modal.find('.imageContainer');
 	var $detailsContainer = $modal.find('.detailsContainer');
+	var $websiteLink = $modal.find('.animalLink');
 	$detailsContainer.hide();
 
 
@@ -153,6 +155,7 @@
 				'imageLG':			'images/koala-lg.jpg',
 				'lat':					'-29.353115',
 				'lng':					'148.432723',
+				'link':		'https://en.wikipedia.org/wiki/Koala',
 			},
 			{
 				'title': 				'Tazmanian Devil',
@@ -161,6 +164,7 @@
 				'imageLG':			'images/devil-lg.jpg',
 				'lat':					'-41.401246',
 				'lng':					'146.455184',
+				'link':		'https://en.wikipedia.org/wiki/Tasmanian_devil',
 			},
 			{
 				'title': 				'Mongoose',
@@ -169,6 +173,7 @@
 				'imageLG':			'images/mongoose-lg.jpg',
 				'lat':					'36.474144',
 				'lng':					'97.610986',
+				'link':		'https://en.wikipedia.org/wiki/Mongoose',
 			},
 			{
 				'title': 				'Red Panda',
@@ -177,6 +182,7 @@
 				'imageLG':			'images/redpanda-lg.jpg',
 				'lat':					'29.5549125',
 				'lng':					'106.5485537',
+				'link':		'https://en.wikipedia.org/wiki/Red_panda',
 			},
 			{
 				'title': 				'Bison',
@@ -185,6 +191,7 @@
 				'imageLG':			'images/bison-lg.jpg',
 				'lat':					'44.2126995',
 				'lng':					'-100.2471641',
+				'link':		'https://en.wikipedia.org/wiki/Bison',
 			},
 			{
 				'title': 				'Peregrine Falcon',
@@ -193,6 +200,7 @@
 				'imageLG':			'images/peregrine-lg.jpg',
 				'lat':					'46.191657',
 				'lng':					'-119.936778',
+				'link':		'https://en.wikipedia.org/wiki/Peregrine_falcon',
 			}
 		]};
 
@@ -210,6 +218,7 @@
 				.attr('data-imagelg', animal.imageLG)
 				.attr('data-lat', animal.lat)
 				.attr('data-lng', animal.lng)
+				.attr('data-link', animal.link)
 				.appendTo(".carousel");
 			var $carItemImg = $("<img>")
 				.attr('src', animal.imageSM)
@@ -250,6 +259,7 @@
 			var description = button.data('description');
 			var latitude = button.data('lat');
 			var longitude = button.data('lng');
+			var link = button.data('link');
 
 			$modal.find('.modal-title').text(title)
 			$imageContainer.find('img')
@@ -259,13 +269,16 @@
 				.html(description);
 				$detailsContainer.find('h3')
 				.html(title);
-
+			$websiteLink.on('click', function(e) {
+				e.preventDefault();
+				window.open(link);
 			// Re-center map
 			moveToLocation(latitude, longitude);
 		});
 
 		$modal.on('hide.bs.modal', function (event) {
-			$imageContainer.css('width', '100%')
+			$imageContainer.css('width', '100%');
+			$websiteLink.off('click');
 			$detailsContainer.hide();
 		});
 
